@@ -1,13 +1,27 @@
 import { Context } from "../deps.ts";
-import { UserModel } from "../models/user_model.ts";
-
-const user: UserModel = { id: 1, title: "Mr" };
+import UserModel from "../models/user_model.ts";
 
 class AuthController {
   login() {}
-  register(ctx: Context) {
-    ctx.response.body = user;
+  async register(ctx: Context) {
+    const { email } = await ctx.request.body()
+      .value;
+    console.log(email);
+
+    const user = await UserModel.findOne({ email });
+
+    if (user) {
+      ctx.response.body = { message: "Already exists" };
+      ctx.response.status = 422;
+      return;
+    }
+
     ctx.response.status = 200;
+    ctx.response.body = {
+      message: "New user yaay!",
+      action: "Create new one",
+      id: 1,
+    };
   }
 }
 
