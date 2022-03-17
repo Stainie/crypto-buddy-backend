@@ -1,26 +1,65 @@
-import { Context } from "../deps.ts";
+import { compareSync, Context, create, hashSync, Payload } from "../deps.ts";
 import UserModel from "../models/user_model.ts";
 
-class AuthController {
-  login() {}
-  async register(ctx: Context) {
-    const { email } = await ctx.request.body()
-      .value;
-    console.log(email);
+const key = await crypto.subtle.generateKey(
+  { name: "HMAC", hash: "SHA-512" },
+  true,
+  ["sign", "verify"],
+);
 
+class AuthController {
+  async login(ctx: Context) {
+    const { email, password } = await ctx.request.body().value;
     const user = await UserModel.findOne({ email });
+    if (!user) {
+      ctx.response.body = { message: "Invalid email" };
+      ctx.response.status = 422;
+      return;
+    }
+
+    const passwordExists = compareSync(password, user.password);
+    if (!passwordExists) {
+      ctx.response.body = { message: "Invalid password" };
+      ctx.response.status = 422;
+      return;
+    }
+
+    const payload: Payload = {
+      iss: user.email,
+      exp: new Date().getTime() + 60 * 60 * 1000,
+    };
+
+    const jwt = await create({ alg: "HS512", typ: "JWT" }, payload, key);
+
+    ctx.response.body = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      jwt,
+    };
+  }
+
+  async register(ctx: Context) {
+    const { email, username, password } = await ctx.request.body()
+      .value;
+
+    let user = await UserModel.findOne({ email });
 
     if (user) {
       ctx.response.body = { message: "Already exists" };
       ctx.response.status = 422;
       return;
     }
+    const hashedPassword = hashSync(password);
 
-    ctx.response.status = 200;
+    user = new UserModel({ username, email, password: hashedPassword });
+    await user.save();
+    ctx.response.status = 201;
     ctx.response.body = {
-      message: "New user yaay!",
-      action: "Create new one",
-      id: 1,
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      password: user.password,
     };
   }
 }
