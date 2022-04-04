@@ -2,10 +2,10 @@ import { Document } from "https://deno.land/x/mongo@v0.29.1/mod.ts";
 import db from "../core/mongo_service.ts";
 
 export default class UserModel {
-  public id: string;
-  public username: string;
-  public email: string;
-  public password: string;
+  private id: string;
+  private username: string;
+  private email: string;
+  private password: string;
 
   constructor(
     { id = "", username = "", email = "", password = "" },
