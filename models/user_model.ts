@@ -1,11 +1,11 @@
 import { Document } from "https://deno.land/x/mongo@v0.29.1/mod.ts";
-import db from "../core/mongo_service.ts";
+import { userCollection } from "../core/mongo_service.ts";
 
 export default class UserModel {
-  private id: string;
-  private username: string;
-  private email: string;
-  private password: string;
+  id: string;
+  username: string;
+  email: string;
+  password: string;
 
   constructor(
     { id = "", username = "", email = "", password = "" },
@@ -17,7 +17,7 @@ export default class UserModel {
   }
 
   static async findOne(params: Record<string, unknown>) {
-    const user = await db.collection("users").findOne(
+    const user = await userCollection.findOne(
       params,
     ) as Document;
     user.id = user._id;
@@ -26,7 +26,7 @@ export default class UserModel {
   }
 
   async save() {
-    this.id = await db.collection("users").insertOne(this);
+    this.id = await userCollection.insertOne(this);
     return this;
   }
 }

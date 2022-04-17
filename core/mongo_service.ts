@@ -8,4 +8,6 @@ await client.connect(
 
 const db = client.database("crypto_buddy");
 
-export default db;
+export const userCollection = db.collection("users");
+export const coinCollection = db.collection("coins");
+export const rulesCollection = db.collection("rules");
