@@ -12,7 +12,9 @@ router
   // Coin service endpoints
   .get("api/coins", coinController.getPopularCoins)
   // Rule service endpoints
-  .get("/api/rules", ruleController.getRulesForUser)
+  .get("/api/rules/:userId", (ctx, next) => {
+    ruleController.getRulesForUser(ctx, ctx.params.userId);
+  })
   .put("api/rules/:id", ruleController.updateRule);
 
 export default router;

@@ -2,8 +2,13 @@ import { Context } from "../deps.ts";
 import RuleModel from "../models/rule_model.ts";
 
 class RuleController {
-  async getRulesForUser(ctx: Context) {
-    const rules = await RuleModel.findByUserId("1");
+  async getRulesForUser(ctx: Context, userId: string) {
+    const rules = await RuleModel.findByUserId(userId);
+
+    if (!rules) {
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Incorrect id" };
+    }
 
     ctx.response.body = rules;
   }

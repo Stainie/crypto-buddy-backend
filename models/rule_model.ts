@@ -38,8 +38,12 @@ export default class RuleModel extends BaseModel {
     return this;
   }
 
-  static async findByUserId(userId: string): Promise<RuleModel[]> {
-    const rules = await rulesCollection.find({ userId });
+  static async findByUserId(userId: string): Promise<RuleModel[] | null> {
+    const rules = await rulesCollection.find({ _id: userId });
+
+    if (!rules) {
+      return null;
+    }
     return rules.map((rule) => RuleModel.prepare(rule));
   }
 
