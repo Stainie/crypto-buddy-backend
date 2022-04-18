@@ -2,7 +2,11 @@ import { Context } from "../deps.ts";
 import RuleModel from "../models/rule_model.ts";
 
 class RuleController {
-  async getRulesForUser(ctx: Context) {}
+  async getRulesForUser(ctx: Context) {
+    const rules = await RuleModel.findByUserId("1");
+
+    ctx.response.body = rules;
+  }
 
   async storeRule(ctx: Context) {
     if (ctx.request.hasBody) {
@@ -23,7 +27,7 @@ class RuleController {
       return;
     }
 
-    rule = new RuleModel({ name, coins, conditions });
+    rule = new RuleModel(name, coins, conditions);
     await rule.save();
     ctx.response.status = 201;
     ctx.response.body = {
@@ -34,9 +38,11 @@ class RuleController {
     };
   }
 
-  async updateRule() {}
+  async updateRule(ctx: Context) {
+    const { userId, name, coins, conditions } = await ctx.request.body().value;
+  }
 
-  async deleteRule() {}
+  async deleteRule(ctx: Context) {}
 }
 
 const ruleController = new RuleController();

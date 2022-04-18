@@ -16,11 +16,11 @@ export default class CoinConversionModel {
     this.marketCap = $marketCap;
     this.lastUpdated = $lastUpdated;
   }
-  price: number;
-  volumeDay: number;
-  percentChangeHour: number;
-  percentChangeDay: number;
-  percentChangeWeek: number;
-  marketCap: number;
-  lastUpdated: string;
+  price?: number;
+  volumeDay?: number;
+  percentChangeHour?: number;
+  percentChangeDay?: number;
+  percentChangeWeek?: number;
+  marketCap?: number;
+  lastUpdated?: string;
 }

@@ -1,28 +1,30 @@
 import { Document } from "https://deno.land/x/mongo@v0.29.1/mod.ts";
 import { userCollection } from "../core/mongo_service.ts";
+import BaseModel from "./base_model.ts";
 
-export default class UserModel {
-  id: string;
-  username: string;
-  email: string;
-  password: string;
-
+export default class UserModel extends BaseModel {
   constructor(
-    { id = "", username = "", email = "", password = "" },
+    public username?: string,
+    public email?: string,
+    public password?: string,
   ) {
-    this.id = id;
-    this.username = username;
-    this.email = email;
-    this.password = password;
+    super();
+  }
+
+  static fromUser(user: UserModel) {
+    const newInstance = new UserModel(user.username, user.email, user.password);
+    newInstance.id = user.id;
+
+    return newInstance;
   }
 
   static async findOne(params: Record<string, unknown>) {
     const user = await userCollection.findOne(
       params,
     ) as Document;
-    user.id = user._id;
-    delete user._id;
-    return new UserModel(user);
+    const modifiedUser = BaseModel.prepare(user);
+
+    return this.fromUser(modifiedUser);
   }
 
   async save() {
