@@ -8,6 +8,7 @@ class RuleController {
     if (!rules) {
       ctx.response.status = 404;
       ctx.response.body = { message: "Incorrect id" };
+      return;
     }
 
     ctx.response.body = rules;
@@ -43,11 +44,31 @@ class RuleController {
     };
   }
 
-  async updateRule(ctx: Context) {
+  async updateRule(ctx: Context, id: string) {
+    const rule = await RuleModel.findOne({ id });
+
+    if (!rule) {
+      ctx.response.body = { message: "Does not exist" };
+      ctx.response.status = 404;
+      return;
+    }
+
     const { userId, name, coins, conditions } = await ctx.request.body().value;
+
+    await rule.updateOne(userId, name, coins, conditions);
+    ctx.response.body = rule;
+    ctx.response.status = 200;
   }
 
-  async deleteRule(ctx: Context) {}
+  async deleteRule(ctx: Context, id: string) {
+    const rule = await RuleModel.findOne({ id });
+
+    if (!rule) {
+      ctx.response.body = { message: "Does not exist" };
+      ctx.response.status = 404;
+      return;
+    }
+  }
 }
 
 const ruleController = new RuleController();

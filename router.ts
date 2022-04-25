@@ -10,11 +10,17 @@ router
   .post("/api/login", authController.login)
   .post("/api/register", authController.register)
   // Coin service endpoints
-  .get("api/coins", coinController.getPopularCoins)
+  .get("/api/coins", coinController.getPopularCoins)
   // Rule service endpoints
   .get("/api/rules/:userId", (ctx, next) => {
-    ruleController.getRulesForUser(ctx, ctx.params.userId);
+    return ruleController.getRulesForUser(ctx, ctx.params.userId);
   })
-  .put("api/rules/:id", ruleController.updateRule);
+  .post("/api/rules", ruleController.storeRule)
+  .put("/api/rules/:id", (ctx, next) => {
+    return ruleController.updateRule(ctx, ctx.params.id);
+  })
+  .delete("/api/rules/:id", (ctx, next) => {
+    return ruleController.deleteRule(ctx, ctx.params.id);
+  });
 
 export default router;

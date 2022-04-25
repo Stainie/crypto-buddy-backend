@@ -17,7 +17,7 @@ class AuthController {
       return;
     }
 
-    const passwordExists = compareSync(password, user.password);
+    const passwordExists = compareSync(password, user.password ?? "");
     if (!passwordExists) {
       ctx.response.body = { message: "Invalid password" };
       ctx.response.status = 422;
@@ -52,7 +52,7 @@ class AuthController {
     }
     const hashedPassword = hashSync(password);
 
-    user = new UserModel({ username, email, password: hashedPassword });
+    user = new UserModel(username, email, hashedPassword);
     await user.save();
     ctx.response.status = 201;
     ctx.response.body = {
