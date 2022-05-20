@@ -1,4 +1,5 @@
 import { Document } from "https://deno.land/x/mongo@v0.29.1/mod.ts";
+import { Bson } from "../deps.ts";
 import { rulesCollection } from "../core/mongo_service.ts";
 import BaseModel from "./base_model.ts";
 
@@ -33,7 +34,9 @@ export default class RuleModel extends BaseModel {
   }
 
   async save() {
-    this.id = await rulesCollection.insertOne(this);
+    delete this.id;
+    const { $oid } = await rulesCollection.insertOne(this);
+    this.id = $oid;
     return this;
   }
 
@@ -52,7 +55,7 @@ export default class RuleModel extends BaseModel {
     coins?: number[],
     conditions?: number[],
   ) {
-    await rulesCollection.updateOne({ _id: this.id }, {
+    await rulesCollection.replaceOne({ _id: new Bson.ObjectId(this.id) }, {
       userId,
       name,
       coins,
@@ -60,8 +63,8 @@ export default class RuleModel extends BaseModel {
     });
   }
 
-  async delete() {
-    await rulesCollection.delete({ _id: this.id });
+  async deleteOne() {
+    await rulesCollection.delete({ _id: new Bson.ObjectId(this.id) });
   }
 
   // deno-lint-ignore no-explicit-any

@@ -28,7 +28,9 @@ export default class UserModel extends BaseModel {
   }
 
   async save() {
-    this.id = await userCollection.insertOne(this);
+    delete this.id;
+    const { $oid } = await userCollection.insertOne(this);
+    this.id = $oid;
     return this;
   }
 }

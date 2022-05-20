@@ -1,4 +1,4 @@
-import { Context } from "../deps.ts";
+import { Bson, Context } from "../deps.ts";
 import RuleModel from "../models/rule_model.ts";
 
 class RuleController {
@@ -33,11 +33,12 @@ class RuleController {
       return;
     }
 
-    rule = new RuleModel(name, coins, conditions);
+    rule = new RuleModel(userId, name, coins, conditions);
     await rule.save();
     ctx.response.status = 201;
     ctx.response.body = {
       id: rule.id,
+      userId: rule.userId,
       name: rule.name,
       coins: rule.coins,
       conditions: rule.conditions,
@@ -45,7 +46,11 @@ class RuleController {
   }
 
   async updateRule(ctx: Context, id: string) {
-    const rule = await RuleModel.findOne({ id });
+    const rule: RuleModel = await RuleModel.findOne({
+      _id: new Bson.ObjectId(id),
+    });
+
+    console.log(rule);
 
     if (!rule) {
       ctx.response.body = { message: "Does not exist" };
@@ -61,13 +66,18 @@ class RuleController {
   }
 
   async deleteRule(ctx: Context, id: string) {
-    const rule = await RuleModel.findOne({ id });
+    const rule: RuleModel = await RuleModel.findOne({
+      _id: new Bson.ObjectId(id),
+    });
 
     if (!rule) {
       ctx.response.body = { message: "Does not exist" };
       ctx.response.status = 404;
       return;
     }
+
+    await rule.deleteOne();
+    ctx.response.status = 204;
   }
 }
 
