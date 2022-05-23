@@ -1,11 +1,6 @@
 import { compareSync, Context, create, hashSync, Payload } from "../deps.ts";
+import key from "../middleware/key.ts";
 import UserModel from "../models/user_model.ts";
-
-const key = await crypto.subtle.generateKey(
-  { name: "HMAC", hash: "SHA-512" },
-  true,
-  ["sign", "verify"],
-);
 
 class AuthController {
   async login(ctx: Context) {

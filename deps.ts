@@ -8,6 +8,6 @@ export {
   compareSync,
   hashSync,
 } from "https://deno.land/x/bcrypt@v0.3.0/mod.ts";
-export { create, verify } from "https://deno.land/x/djwt@v2.4/mod.ts";
+export { create, validate, verify } from "https://deno.land/x/djwt@v2.4/mod.ts";
 export type { Payload } from "https://deno.land/x/djwt@v2.4/mod.ts";
 import "https://deno.land/x/dotenv@v3.2.0/load.ts";

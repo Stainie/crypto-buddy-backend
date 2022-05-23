@@ -1,8 +1,17 @@
 import { Bson, Context } from "../deps.ts";
 import RuleModel from "../models/rule_model.ts";
+import UserModel from "../models/user_model.ts";
 
 class RuleController {
   async getRulesForUser(ctx: Context, userId: string) {
+    const user = ctx.state.user as UserModel;
+
+    if (userId != user.id) {
+      ctx.response.status = 403;
+      ctx.response.body = { message: "Unauthorised user" };
+      return;
+    }
+
     const rules = await RuleModel.findByUserId(userId);
 
     if (!rules) {
