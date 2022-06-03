@@ -1,6 +1,9 @@
 import { apiUrls } from "../constants/api_urls.ts";
+import { constants } from "../constants/constant_values.ts";
+import { redisClient } from "../core/redis_service.ts";
 class ExchangeController {
   async getHistoricalData() {
+    console.log("long pooling");
     const myHeaders = new Headers({
       accept: "application/json",
       "X-CMC_PRO_API_KEY": Deno.env.get("COIN_MARKET_CAP_API_KEY")!,
@@ -13,6 +16,8 @@ class ExchangeController {
     const response = await fetch(request);
 
     const coinList = await response.json();
+
+    redisClient.hset(constants.POPULAR_COINS, coinList["data"]);
 
     return coinList["data"];
   }

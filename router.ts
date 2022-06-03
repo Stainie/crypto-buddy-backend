@@ -13,14 +13,14 @@ router
   // Coin service endpoints
   .get("/api/coins", coinController.getPopularCoins)
   // Rule service endpoints
-  .get("/api/rules/:userId", authMiddleware, (ctx, next) => {
+  .get("/api/rules/:userId", authMiddleware, (ctx) => {
     return ruleController.getRulesForUser(ctx, ctx.params.userId);
   })
   .post("/api/rules", authMiddleware, ruleController.storeRule)
-  .put("/api/rules/:id", authMiddleware, (ctx, next) => {
+  .put("/api/rules/:id", authMiddleware, (ctx) => {
     return ruleController.updateRule(ctx, ctx.params.id);
   })
-  .delete("/api/rules/:id", authMiddleware, (ctx, next) => {
+  .delete("/api/rules/:id", authMiddleware, (ctx) => {
     return ruleController.deleteRule(ctx, ctx.params.id);
   });
 

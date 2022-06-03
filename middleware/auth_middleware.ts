@@ -2,6 +2,11 @@ import { Context, verify } from "../deps.ts";
 import UserModel from "../models/user_model.ts";
 import key from "./key.ts";
 
+const unauthorised = (ctx: Context) => {
+  ctx.response.status = 401;
+  ctx.response.body = { message: "Unauthorized" };
+};
+
 // deno-lint-ignore ban-types
 export const authMiddleware = async (ctx: Context, next: Function) => {
   const headers = ctx.request.headers;
@@ -9,16 +14,14 @@ export const authMiddleware = async (ctx: Context, next: Function) => {
   const authHeader = headers.get("Authorization");
 
   if (!authHeader) {
-    ctx.response.status = 401;
-    ctx.response.body = { message: "Unauthorized" };
+    unauthorised(ctx);
     return;
   }
 
   const jwt = authHeader.split(" ")[1];
 
   if (!jwt) {
-    ctx.response.status = 401;
-    ctx.response.body = { message: "Unauthorized" };
+    unauthorised(ctx);
     return;
   }
 
@@ -29,7 +32,6 @@ export const authMiddleware = async (ctx: Context, next: Function) => {
     ctx.state.user = user;
     await next();
   } else {
-    ctx.response.status = 401;
-    ctx.response.body = { message: "Unauthorized" };
+    unauthorised(ctx);
   }
 };
