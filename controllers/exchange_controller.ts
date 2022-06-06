@@ -15,11 +15,11 @@ class ExchangeController {
 
     const response = await fetch(request);
 
-    const coinList = await response.json();
+    const coinList = await response.text();
 
-    redisClient.hset(constants.POPULAR_COINS, coinList["data"]);
+    redisClient.set(constants.POPULAR_COINS, coinList);
 
-    return coinList["data"];
+    return coinList;
   }
 }
 

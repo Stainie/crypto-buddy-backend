@@ -5,10 +5,12 @@ import exchangeController from "../controllers/exchange_controller.ts";
 
 class CoinController {
   async getPopularCoins(ctx: Context) {
-    let popularCoins = await redisClient.hgetall(constants.POPULAR_COINS);
+    const popularCoins = await redisClient.get(constants.POPULAR_COINS);
+
+    let coinJSON = JSON.parse(popularCoins!.toString());
 
     if (!popularCoins) {
-      popularCoins = await exchangeController.getHistoricalData();
+      coinJSON = await exchangeController.getHistoricalData();
 
       if (!popularCoins) {
         ctx.response.status = 404;
@@ -17,7 +19,7 @@ class CoinController {
       }
     }
 
-    ctx.response.body = popularCoins;
+    ctx.response.body = coinJSON["data"];
   }
 }
 

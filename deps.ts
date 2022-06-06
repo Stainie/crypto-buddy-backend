@@ -14,6 +14,7 @@ export { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 export {
   cron,
   every15Minute,
+  everyMinute,
 } from "https://deno.land/x/deno_cron@v1.0.0/cron.ts";
 export { connect } from "https://deno.land/x/redis@v0.25.5/mod.ts";
 
