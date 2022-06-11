@@ -17,5 +17,5 @@ export {
   everyMinute,
 } from "https://deno.land/x/deno_cron@v1.0.0/cron.ts";
 export { connect } from "https://deno.land/x/redis@v0.25.5/mod.ts";
-
+export { createRequire } from "https://deno.land/std@0.143.0/node/module.ts";
 import "https://deno.land/x/dotenv@v3.2.0/load.ts";

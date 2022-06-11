@@ -36,3 +36,4 @@ cli/tests/.test_coverage/
 
 # Custom ignored files
 .env
+/service_account_key.json
