@@ -8,7 +8,8 @@ export default class RuleModel extends BaseModel {
     public userId?: string,
     public name?: string,
     public coins?: number[],
-    public conditions?: number[],
+    public dipCoin?: string,
+    public peakCoin?: string,
   ) {
     super();
   }
@@ -18,7 +19,8 @@ export default class RuleModel extends BaseModel {
       rule.userId,
       rule.name,
       rule.coins,
-      rule.conditions,
+      rule.dipCoin,
+      rule.peakCoin,
     );
     newInstance.id = rule.id;
 
@@ -53,13 +55,15 @@ export default class RuleModel extends BaseModel {
     userId?: string,
     name?: string,
     coins?: number[],
-    conditions?: number[],
+    dipCoin?: string,
+    peakCoin?: string,
   ) {
     await rulesCollection.replaceOne({ _id: new Bson.ObjectId(this.id) }, {
       userId,
       name,
       coins,
-      conditions,
+      dipCoin,
+      peakCoin,
     });
   }
 

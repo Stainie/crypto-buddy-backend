@@ -1,4 +1,4 @@
-import { Application, every15Minute, everyMinute, oakCors } from "./deps.ts";
+import { Application, every15Minute, oakCors } from "./deps.ts";
 import exchangeController from "./controllers/exchange_controller.ts";
 
 import router from "./router.ts";
