@@ -83,12 +83,4 @@ export default class RuleModel extends BaseModel {
   async deleteOne() {
     await rulesCollection.delete({ _id: new Bson.ObjectId(this.id) });
   }
-
-  // deno-lint-ignore no-explicit-any
-  protected static prepare(data: any) {
-    if (data == null) return data;
-    BaseModel.prepare(data);
-    const rule = this.fromUser(data);
-    return rule;
-  }
 }

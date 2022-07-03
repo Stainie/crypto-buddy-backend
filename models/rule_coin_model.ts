@@ -18,4 +18,11 @@ export default class RuleCoinModel extends BaseModel {
     const modifiedCoin = RuleCoinModel.prepare(coin);
     return modifiedCoin;
   }
+
+  async save() {
+    delete this.id;
+    const { $oid } = await coinCollection.insertOne(this);
+    this.id = $oid;
+    return this;
+  }
 }
