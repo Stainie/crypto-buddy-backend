@@ -7,9 +7,9 @@ export default class RuleModel extends BaseModel {
   constructor(
     public userId?: string,
     public name?: string,
-    public coins?: number[],
     public dipCoin?: string,
     public peakCoin?: string,
+    public notified?: boolean,
   ) {
     super();
   }
@@ -18,9 +18,9 @@ export default class RuleModel extends BaseModel {
     const newInstance = new RuleModel(
       rule.userId,
       rule.name,
-      rule.coins,
       rule.dipCoin,
       rule.peakCoin,
+      rule.notified,
     );
     newInstance.id = rule.id;
 
@@ -51,19 +51,32 @@ export default class RuleModel extends BaseModel {
     return rules.map((rule) => RuleModel.prepare(rule));
   }
 
+  static async findNonNotifiedRules() {
+    const rules = await rulesCollection.find({ notified: false });
+
+    if (!rules) {
+      return null;
+    }
+
+    return rules.map((rule) => {
+      rule.updateOne({ notified: true });
+      RuleModel.prepare(rule);
+    });
+  }
+
   async updateOne(
     userId?: string,
     name?: string,
-    coins?: number[],
     dipCoin?: string,
     peakCoin?: string,
+    notified?: boolean,
   ) {
     await rulesCollection.replaceOne({ _id: new Bson.ObjectId(this.id) }, {
       userId,
       name,
-      coins,
       dipCoin,
       peakCoin,
+      notified,
     });
   }
 
